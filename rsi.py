@@ -11,12 +11,6 @@ if __name__ == "__main__":
     # unit = 240
 
     upbit = Upbit()
-    # Telegram Bot Token
-    # with open("./token.txt") as f:
-    #     lines = f.readlines()
-    #     token = lines[0].strip()
-
-    # TELEGRAM_TOKEN = token
     bot = UpbitAlertTelegramBot()
 
     # 기준 차트 단위. 3 = 3분봉
@@ -44,7 +38,8 @@ if __name__ == "__main__":
         time.sleep(30)
 
         if now_rsi > 40:
-            asyncio.run(bot.send_message(CHAT_ID, "RSI is above 50"))
+            bot.send_msg("RSI is greater than 40!")
+            # asyncio.run(bot.echo(CHAT_ID, "RSI is above 50"))
 
 
 # def rsi(df, periods=14, ema=True):
