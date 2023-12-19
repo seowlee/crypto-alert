@@ -38,7 +38,8 @@ if __name__ == "__main__":
         msg = "RSI is greater than 40!"
         if now_rsi > 40:
             message = " ".join(sys.argv[1:]) or "RSI is greater than 40!"
-            # asyncio.set_event_loop_policy(asyncio.set_event_loop_policy())
-            asyncio.run(bot.send_alert(message), debug=False)
+            loop = asyncio.get_event_loop()
+            loop.run_until_complete(bot.send_alert(message))
+            loop.close
 
         time.sleep(30)
