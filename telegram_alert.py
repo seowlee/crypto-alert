@@ -2,7 +2,14 @@ import logging
 import asyncio
 import telegram
 from telegram import ForceReply, Update
-from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
+from telegram.ext import (
+    ApplicationBuilder,
+    CommandHandler,
+    MessageHandler,
+    ContextTypes,
+    ConversationHandler,
+    filters,
+)
 
 
 with open("./token.txt") as f:
@@ -22,6 +29,7 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
 
+END = ConversationHandler.END
 
 # async def send_alert(message):
 #     bot = telegram.Bot(token=TELEGRAM_TOKEN)
@@ -44,7 +52,7 @@ class UpbitAlertTelegramBot:
         self.chat_id = CHAT_ID
         self.app, self.bot, self.updater, self.loop = self._build_application()
         self.telegram_thread = None
-        self.app.add_handler(CommandHandler(command="start", callback=self.start))
+        # self.app.add_handler(CommandHandler(command="start", callback=self.start))
         print("Bot initialized...")
 
     def _build_application(self):
@@ -62,9 +70,18 @@ class UpbitAlertTelegramBot:
             reply_markup=ForceReply(selective=True),
         )
 
-    async def stop(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+    async def stop(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
         """End Conversation by command."""
         await update.message.reply_text("Okay, bye.")
+
+        return END
+
+    async def end(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+        """End conversation from InlineKeyboardButton."""
+        await update.callback_query.answer()
+
+        text = "See you around!"
+        await update.callback_query.edit_message_text(text=text)
 
         return END
 
