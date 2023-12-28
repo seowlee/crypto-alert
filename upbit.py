@@ -181,6 +181,53 @@ class Candles:
         )
 
 
+class Market:
+    def __init__(self, market, korean_name, english_name, market_warning):
+        self._market = market
+        self._korean_name = korean_name
+        self._english_name = english_name
+        self._market_warning = market_warning
+
+    @staticmethod
+    def from_json(json):
+        return Market(
+            json["market"],
+            json["korean_name"],
+            json["english_name"],
+            json["market_warning"],
+        )
+
+    def market(self):
+        return self._market
+
+    def korean_name(self):
+        return self._korean_name
+
+    def english_name(self):
+        return self._english_name
+
+    def market_warning(self):
+        return self._market_warning
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
+        return (
+            "Market ["
+            "Market: {}, "
+            "Korean Name: {}, "
+            "English Name: {}, "
+            "Market Warning: {}"
+            "]".format(
+                self._market,
+                self._korean_name,
+                self._english_name,
+                self._market_warning,
+            )
+        )
+
+
 class Upbit:
     def __init__(self):
         self._base_url = "https://api.upbit.com/v1"
@@ -193,6 +240,14 @@ class Upbit:
                 "Accept": "application/json",
             },
         )
+
+    def markets(self):
+        return [
+            Market.from_json(x)
+            for x in self._get(
+                "market/all".format(self._base_url), {"isDetails": True}
+            ).json()
+        ]
 
     def candles(self, market):
         return Candles(self, market)

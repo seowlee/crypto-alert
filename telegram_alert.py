@@ -62,6 +62,12 @@ class UpbitAlertTelegramBot:
             reply_markup=ForceReply(selective=True),
         )
 
+    async def stop(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
+        """End Conversation by command."""
+        await update.message.reply_text("Okay, bye.")
+
+        return END
+
     async def help_command(
         self, update: Update, context: ContextTypes.DEFAULT_TYPE
     ) -> None:
@@ -95,6 +101,7 @@ class UpbitAlertTelegramBot:
     def main(self) -> None:
         """Start the bot."""
         self.app.add_handler(CommandHandler(command="start", callback=self.start))
+        self.app.add_handler(CommandHandler(command="stop", callback=self.stop))
         self.app.add_handler(CommandHandler(command="help", callback=self.help_command))
         self.app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, self.echo))
         # self.job_queue.run_once(self.callback_msg, 30)
